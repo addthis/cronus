@@ -1,0 +1,63 @@
+# cronus
+
+## What's this?
+
+`cronus` is a lightweight cron Java library. It accepts [Vixie Cron](http://crontab.org/) syntax for specifying patterns.
+cronus uses JSR 311 and requires Java 8 or higher.
+
+
+## Building
+
+`cronus` uses [Apache Maven](http://maven.apache.org/) which it is beyond
+the scope to detail.  The super simple quick start is:
+
+`mvn test`
+
+## Use
+
+```xml
+<dependency>
+  <groupId>com.addthis</groupId>
+  <artifactId>cronus</artifactId>
+  <version>latest-and-greatest</version>
+</dependency>
+```
+
+You can either install locally, or releases will eventually make their
+way to maven central.
+
+## Example
+
+```java
+        // Create a scheduler with one execution thread
+        CronScheduler scheduler = new CronScheduler.Builder(1).build();
+        // Create a pattern that runs every minute
+        Future<?> future = scheduler.schedule(CronPattern.build("* * * * *"),
+            () -> System.out.println("hello world"), false);
+        // Scheduled patterns do not execute until scheduler is started up
+        scheduler.startUp();
+        for(int i = 0; i < 70; i++) {
+            Uninterruptibles.sleepUninterruptibly(1, TimeUnit.SECONDS);
+            System.out.print(i + " ");
+        }
+        // Future can be cancelled
+        future.cancel(false);
+        for(int i = 0; i < 50; i++) {
+            Uninterruptibles.sleepUninterruptibly(1, TimeUnit.SECONDS);
+            System.out.print(i + " ");
+        }
+        scheduler.shutDown();
+```
+
+### Versioning
+
+It's x.y.z where:
+
+ * x: something major happened
+ * y: next release
+ * z: bug fix only
+
+### License
+
+cronus is released under the Apache License Version 2.0.  See
+[Apache](http://www.apache.org/licenses/LICENSE-2.0) or the LICENSE for details.
