@@ -24,7 +24,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.addthis</groupId>
   <artifactId>cronus</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.1.0-SNAPSHOT</version>
   <name>cronus</name>
   <description>lightweight cron library for java</description>
   <licenses>
