@@ -59,4 +59,11 @@
     </dependency>
   </dependencies>
 
+  <scm>
+    <connection>scm:git:git@github.com:addthis/cronus.git</connection>
+    <developerConnection>scm:git:git@github.com:addthis/cronus.git</developerConnection>
+    <url>https://github.com/addthis/cronus</url>
+    <tag>HEAD</tag>
+  </scm>
+
 </project>
