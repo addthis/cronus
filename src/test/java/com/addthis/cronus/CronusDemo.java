@@ -22,11 +22,13 @@ public class CronusDemo {
 
     public static void main(String[] args) throws Exception {
         CronScheduler scheduler = new CronScheduler.Builder(1).build();
+        System.out.println("Scheduler is running: " + scheduler.isRunning());
         System.out.println("Scheduling cron pattern");
         Future<?> future = scheduler.schedule(CronPattern.build("* * * * *"),
                                               () -> System.out.println("hello world"), false);
         // scheduled patterns do not execute until scheduler is started up
-        scheduler.startUp();
+        scheduler.start();
+        System.out.println("Scheduler is running: " + scheduler.isRunning());
         for(int i = 0; i < 70; i++) {
             Uninterruptibles.sleepUninterruptibly(1, TimeUnit.SECONDS);
             System.out.print(i + " ");
@@ -37,6 +39,6 @@ public class CronusDemo {
             System.out.print(i + " ");
         }
         System.out.println();
-        scheduler.shutDown();
+        scheduler.stop();
     }
 }

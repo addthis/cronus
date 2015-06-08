@@ -35,7 +35,7 @@ way to maven central.
         Future<?> future = scheduler.schedule(CronPattern.build("* * * * *"),
             () -> System.out.println("hello world"), false);
         // Scheduled patterns do not execute until scheduler is started up
-        scheduler.startUp();
+        scheduler.start();
         for(int i = 0; i < 70; i++) {
             Uninterruptibles.sleepUninterruptibly(1, TimeUnit.SECONDS);
             System.out.print(i + " ");
@@ -46,7 +46,7 @@ way to maven central.
             Uninterruptibles.sleepUninterruptibly(1, TimeUnit.SECONDS);
             System.out.print(i + " ");
         }
-        scheduler.shutDown();
+        scheduler.stop();
 ```
 
 ### Versioning

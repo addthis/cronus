@@ -34,7 +34,7 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.AbstractIdleService;
+import com.google.common.util.concurrent.AbstractService;
 import com.google.common.util.concurrent.Service;
 
 import org.slf4j.Logger;
@@ -47,10 +47,9 @@ import org.slf4j.LoggerFactory;
  * on constructor for advice on whether to use the constructor
  * or the builder. Cron patterns are scheduled via the
  * {@code #schedule(CronPattern, Runnable, boolean)} method.
- * The cron scheduler is a {@link Service} and implements {@code #startUp()},
- * {@code #startAsync()}, {@code #shutDown()}, and {@code #stopAsync()}.
+ * The cron scheduler is a {@link Service}.
  */
-public class CronScheduler extends AbstractIdleService implements Service {
+public class CronScheduler extends AbstractService implements Service {
 
     /**
      * The {@code CronFutureExternal} is returned on scheduling a pattern.
@@ -74,7 +73,7 @@ public class CronScheduler extends AbstractIdleService implements Service {
      * itself is thread safe. Rather the lock guards the reference to the object.
      * Acquiring the read lock grants read privileges to the reference and
      * allows for modification of the object. Acquiring the write lock is used
-     * during {@link #startUp()} to set the reference to null.
+     * during {@link #doStart()} to set the reference to null.
      */
     @Nonnull
     private final ReadWriteLock preStartupFuturesLock;
@@ -135,10 +134,10 @@ public class CronScheduler extends AbstractIdleService implements Service {
     }
 
     @Override
-    public void startUp() throws Exception {
-        log.info("Starting " + serviceName());
-        preStartupFuturesLock.writeLock().lock();
+    protected void doStart() {
         ConcurrentHashMap<CronFutureExternal<?>, CronRunnable> map;
+        log.info("Starting cron scheduler");
+        preStartupFuturesLock.writeLock().lock();
         try {
             map = preStartupFutures;
             preStartupFutures = null;
@@ -153,19 +152,28 @@ public class CronScheduler extends AbstractIdleService implements Service {
                 }
             }
         }
+        notifyStarted();
     }
 
     @Override
-    public void shutDown() throws Exception {
-        log.info("Stopping " + serviceName());
+    protected void doStop() {
+        log.info("Stopping cron scheduler");
         executor.shutdown();
-        executor.awaitTermination(shutdownWait.toNanos(), TimeUnit.NANOSECONDS);
+        try {
+            executor.awaitTermination(shutdownWait.toNanos(), TimeUnit.NANOSECONDS);
+        } catch (InterruptedException ex) {
+            log.info("cron scheduler interrupted while waiting for shutdown");
+        }
         executor.shutdownNow();
+        notifyStopped();
     }
 
-    @Override
-    protected String serviceName() {
-        return "cron scheduler";
+    public void start() {
+        startAsync();
+    }
+
+    public void stop() {
+        stopAsync();
     }
 
     public ScheduledExecutorService getExecutor() {
