@@ -22,7 +22,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.addthis</groupId>
   <artifactId>cronus</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.1-SNAPSHOT</version>
   <name>cronus</name>
   <description>lightweight cron library for java</description>
   <licenses>
@@ -61,7 +61,7 @@
     <connection>scm:git:git@github.com:addthis/cronus.git</connection>
     <developerConnection>scm:git:git@github.com:addthis/cronus.git</developerConnection>
     <url>https://github.com/addthis/cronus</url>
-    <tag>v0.1.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
 </project>
